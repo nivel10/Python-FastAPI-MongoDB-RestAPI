@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, status
-from config.db import conn, db_settings
+from config.db import conn, mongodb_settings, mongodb_collections
 from schemas.user import userEntity, usersEntity
+from models.user import User
+from bson import ObjectId
 
 user_router = APIRouter(
     prefix='/users',
@@ -10,10 +12,9 @@ user_router = APIRouter(
 @user_router.get('/')
 async def get_users():
     try:
-        rows = conn[db_settings['collections']['users']].find()
-        #print(rows)
+        rows = conn[mongodb_collections.users].find()
+        print(rows)
         return usersEntity(rows)
-        pass
     except Exception as ex:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -21,19 +22,31 @@ async def get_users():
         )
 
 @user_router.post('/')
-async def create_user(user):
+async def create_user(user: User):
     try:
-        pass
+        user_new = dict(user)
+        user_new.pop('id')
+        user_new_id = conn[mongodb_collections.users].insert_one(user_new).inserted_id
+        user_new_find = await get_user(id=str(user_new_id))
+
+        return user_new_find
     except Exception as ex:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(ex),
         )
 
-@user_router.post('/{id}')
-async def get_user(id):
+@user_router.get('/{id}')
+async def get_user(id: str):
     try:
-        pass
+        user_find = conn[mongodb_collections.users].find_one({'_id': ObjectId(id)})
+        if not user_find:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f'user not found. Id: {id}'
+            )
+        
+        return userEntity(user_find)
     except Exception as ex:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -5,4 +5,4 @@ class User(BaseModel):
     id: Optional[str]
     name: str
     email: str
-    passwor: str
+    password: str
