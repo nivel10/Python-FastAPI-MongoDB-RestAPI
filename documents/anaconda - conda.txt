@@ -1,0 +1,23 @@
+# list environments
+    $conda env list
+
+# create environment
+    $conda create --name <environmentName> python=<pythonVersion>
+
+# activate environment
+    $conda activate <environmentName>
+
+# deactivate environment
+    $conda deactivate
+
+# environment delete
+    $conda env remove --name <environmentName>
+
+# install libraries (inside of environment)
+    $pip install <libraryName>
+
+# list libraries (inside of environment)
+    $pip list
+
+# uninstall libraries (inside of environment)
+    $pip uninstall <libraryName>
