@@ -1,0 +1,17 @@
+# list containers (off)
+    $docker ps -a
+
+# start container
+    $docker start <containerName>
+
+# restart container
+    $docker restart <containerName>
+
+# stop container
+    $docker stop <containerName>
+
+# show volumes
+    $docker volume ls
+
+# delete volumen orphan
+    $docker volume prune
