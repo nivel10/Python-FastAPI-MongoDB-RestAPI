@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
-from config.db import conn, mongodb_settings, mongodb_collections
+from config.db import conn, mongodb_collections
 from schemas.user import userEntity, usersEntity
 from models.user import User
 from bson import ObjectId
