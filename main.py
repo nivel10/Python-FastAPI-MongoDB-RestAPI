@@ -8,6 +8,6 @@ app = FastAPI(
 )
 app.include_router(user_router)
 
-@app.get('/')
+@app.get('/', tags=['main'])
 async def hello():
     return {'message': 'hello world'}
