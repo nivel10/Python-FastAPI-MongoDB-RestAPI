@@ -1,0 +1,5 @@
+# generate list library to install
+    $pip freeze > requirements.txt
+
+# install libraries
+    $pip install -r requirements.txt
