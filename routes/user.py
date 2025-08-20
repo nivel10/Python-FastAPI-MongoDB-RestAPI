@@ -3,17 +3,20 @@ from config.db import conn, mongodb_collections
 from schemas.user import userEntity, usersEntity
 from models.user import User
 from bson import ObjectId
+from passlib.context import CryptContext
+
+crypt = CryptContext(schemes=['bcrypt'])
 
 user_router = APIRouter(
     prefix='/users',
     tags=['users'],
 )
 
-@user_router.get('/')
+@user_router.get('/', response_model=list[User])
 async def get_users():
     try:
         rows = conn[mongodb_collections.users].find()
-        print(rows)
+        # print(rows)
         return usersEntity(rows)
     except Exception as ex:
         raise HTTPException(
@@ -21,11 +24,12 @@ async def get_users():
             detail=str(ex),
         )
 
-@user_router.post('/')
+@user_router.post('/', response_model=User)
 async def create_user(user: User):
     try:
         user_new = dict(user)
         user_new.pop('id')
+        user_new['password'] = crypt.hash(user_new['password'])
         user_new_id = conn[mongodb_collections.users].insert_one(user_new).inserted_id
         user_new_find = await get_user(id=str(user_new_id))
 
@@ -36,7 +40,7 @@ async def create_user(user: User):
             detail=str(ex),
         )
 
-@user_router.get('/{id}')
+@user_router.get('/{id}', response_model=User)
 async def get_user(id: str):
     try:
         user_find = conn[mongodb_collections.users].find_one({'_id': ObjectId(id)})

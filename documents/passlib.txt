@@ -1,0 +1,5 @@
+# how install (inside environment do this)
+    $pip install 'passlib[bcrypt]'
+
+# then install this version
+    $pip install bcrypt=4.0.1
