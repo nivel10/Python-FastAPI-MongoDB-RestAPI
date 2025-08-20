@@ -4,6 +4,7 @@ from schemas.user import userEntity, usersEntity
 from models.user import User
 from bson import ObjectId
 from passlib.context import CryptContext
+# from passlib.hash import sha256_crypt
 
 crypt = CryptContext(schemes=['bcrypt'])
 
@@ -30,6 +31,8 @@ async def create_user(user: User):
         user_new = dict(user)
         user_new.pop('id')
         user_new['password'] = crypt.hash(user_new['password'])
+        # # user_new['password'] = sha256_crypt.encrypt(user_new['password'])
+        # user_new['password'] = sha256_crypt.hash(user_new['password'])
         user_new_id = conn[mongodb_collections.users].insert_one(user_new).inserted_id
         user_new_find = await get_user(id=str(user_new_id))
 
