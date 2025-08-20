@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from config.db import conn, mongodb_collections
-from schemas.user import userEntity, usersEntity, userLoginEntity
+from schemas.user import userEntity, usersEntity, userNotPasswordEntity
 from models.user import User, User_DB, User_Login
 from bson import ObjectId
 from passlib.context import CryptContext
@@ -107,7 +107,7 @@ async def login_user(user_login: User_Login):
                 detail='email or password incorrect',
             )
         
-        return userLoginEntity(user_found)
+        return userNotPasswordEntity(user_found)
     except Exception as ex:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
